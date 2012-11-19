@@ -75,7 +75,7 @@ function renderTagCloud( $input, $params, $parser ) {
 	$cloud_style = @$params['style'];
 	$cloud_classes = preg_split( '/\s+/', @$params['class'] );
 	array_unshift( $cloud_classes, 'tagcloud' );
-	$link_style = $params['linkstyle'];
+	$link_style = @$params['linkstyle'];
 	$link_classes = preg_split( '/\s+/', @$params['linkclass'] );
 	$min_count_input = getBoxExtensionOption( $input, 'min_count' );
 	$min_size_input = getBoxExtensionOption( $input, 'min_size' );
