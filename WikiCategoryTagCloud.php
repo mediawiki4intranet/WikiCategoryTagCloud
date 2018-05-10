@@ -36,17 +36,17 @@ $wgExtensionCredits['parserhook'][] = array(
 );
 
 // Avoid unstubbing $wgParser too early on modern (1.12+) MW versions, as per r35980
-$wgHooks['ParserFirstCallInit'][] = 'registerTagCloudExtension';
+$wgHooks['ParserFirstCallInit'][] = 'efCTC_register';
 
 // Hooked function
-$wgHooks['ArticleSave'][] = 'invalidateCache';
+$wgHooks['ArticleSave'][] = 'efCTC_invalidateCache';
 
-function registerTagCloudExtension( &$parser ) {
-	$parser->setHook( 'tagcloud', 'renderTagCloud' );
+function efCTC_register( $parser ) {
+	$parser->setHook( 'tagcloud', 'efCTC_renderTagCloud' );
 	return true;
 }
 
-function invalidateCache( &$article, &$user, &$text, &$summary, $minor, $watchthis, $sectionanchor, &$flags, &$status ) {
+function efCTC_invalidateCache( $article, $user, $text, $summary, $minor, $watchthis, $sectionanchor, $flags, $status ) {
 	$message = wfMessage( 'tagcloudpages' )->inContentLanguage();
 
 	// If it's empty, do nothing.
@@ -66,7 +66,7 @@ function invalidateCache( &$article, &$user, &$text, &$summary, $minor, $watchth
 	return true;
 }
 
-function renderTagCloud( $input, $params, $parser ) {
+function efCTC_renderTagCloud( $input, $params, $parser ) {
 	$MIN_SIZE = 77;
 	$INCREASE_FACTOR = 100;
 
@@ -77,9 +77,9 @@ function renderTagCloud( $input, $params, $parser ) {
 	array_unshift( $cloud_classes, 'tagcloud' );
 	$link_style = @$params['linkstyle'];
 	$link_classes = preg_split( '/\s+/', @$params['linkclass'] );
-	$min_count_input = getBoxExtensionOption( $input, 'min_count' );
-	$min_size_input = getBoxExtensionOption( $input, 'min_size' );
-	$increase_factor_input = getBoxExtensionOption( $input, 'increase_factor' );
+	$min_count_input = efCTC_getBoxExtensionOption( $input, 'min_count' );
+	$min_size_input = efCTC_getBoxExtensionOption( $input, 'min_size' );
+	$increase_factor_input = efCTC_getBoxExtensionOption( $input, 'increase_factor' );
 	if ( $min_size_input != null ) {
 		$MIN_SIZE = $min_size_input;
 	}
@@ -90,7 +90,7 @@ function renderTagCloud( $input, $params, $parser ) {
 		$min_count_input = 0;
 	}
 
-	$excluded_input = getBoxExtensionOption( $input, 'exclude' );
+	$excluded_input = efCTC_getBoxExtensionOption( $input, 'exclude' );
 
 	$exclude_condition = '';
 	if ( strlen( $excluded_input ) > 0 ) {
@@ -148,7 +148,7 @@ function renderTagCloud( $input, $params, $parser ) {
 	return $htmlOut;
 }
 
-function getBoxExtensionOption( $input, $name, $isNumber = false ) {
+function efCTC_getBoxExtensionOption( $input, $name, $isNumber = false ) {
 	if ( preg_match( "/^\s*$name\s*=\s*(.*)/mi", $input, $matches ) ) {
 		if ( $isNumber ) {
 			return intval( $matches[1] );
